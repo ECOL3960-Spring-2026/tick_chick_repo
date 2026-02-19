@@ -1,1 +1,28 @@
 #this is for processing data
+
+```{r load packages, message = FALSE}
+
+#install.packages("tidyverse")
+#install.packages("here")
+#install.packages("neonUtilities")
+#install.packages("dplyr")
+
+
+library(tidyverse)
+library(here)
+library(neonUtilities)
+library(dplyr)
+
+```
+
+```{r, import raw data files, warning=FALSE}
+
+temperature_data <- read_csv(here("data","raw","mean_temp_data.csv"))
+
+temp_data_processed <- temperature_data %>% select(siteID, startDateTime, endDateTime, tempRHMean)
+
+temp_data_processed %>% 
+  write_csv(here("data","processed","mean_temp_data_processed.csv"))
+
+```
+
