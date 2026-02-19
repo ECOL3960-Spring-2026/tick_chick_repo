@@ -1,3 +1,4 @@
+
 ---
 title: "neon_data_access"
 output: html_document
@@ -39,4 +40,34 @@ start_date <- "2016-01"
 
 # End date (as YYYY-MM)
 end_date <- "2023-12"
+
+```
+
+## Data Grab Code
+
+```{r Pull Tick Pathogens, eval=FALSE}
+
+# Pull Tick Pathogen data
+list2env((loadByProduct(dpID = tick_pathogens,
+                        site = my_sites,
+                        include.provisional = FALSE,
+                        startdate = start_date,
+                        enddate = end_date)),
+         .GlobalEnv)
+
+```
+
+## Tick Pathogen Status
+
+```{r save tick pathogen csv, eval=FALSE}
+
+# Variable names
+
+variables_10092 %>% 
+  write_csv(here("data", "raw", "tick_pathogen_variable.csv"))
+
+# Tick Pathogen Y/N
+
+tck_pathogen %>% 
+  write_csv(here("data", "raw", "tick_pathogen_status.csv"))
 ```
