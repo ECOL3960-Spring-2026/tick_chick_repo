@@ -1,4 +1,10 @@
-#this is for processing data
+---
+title: "Data Processing"
+output: html_document
+date: "2026-02-19"
+---
+
+# Import and Load Packages
 
 ```{r load packages, message = FALSE}
 
@@ -15,14 +21,20 @@ library(dplyr)
 
 ```
 
-```{r, import raw data files, warning=FALSE}
+***
 
-temperature_data <- read_csv(here("data","raw","mean_temp_data.csv"))
+# Relative Humidity Data
 
-temp_data_processed <- temperature_data %>% select(siteID, startDateTime, endDateTime, tempRHMean)
+```{r, process relative humidity data, warning=FALSE}
 
-temp_data_processed %>% 
-  write_csv(here("data","processed","mean_temp_data_processed.csv"))
+# Access humidity data CSV and select useful columns
+
+humidity_data <- read_csv(here("data","raw","relative_humidity_data.csv"))
+
+temperature_data <- humidity_data %>% select(siteID, startDateTime, endDateTime, tempRHMean)
+
+temperature_data %>% 
+  write_csv(here("data","processed","temperature_data.csv"))
 
 ```
 

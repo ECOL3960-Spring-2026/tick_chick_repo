@@ -1,10 +1,10 @@
 ---
-title: "neon_data_access"
+title: "NEON Data Access"
 output: html_document
 date: "2026-02-19"
 ---
 
-## Import Packages
+# Import Packages
 
 ```{r load packages, message = FALSE}
 
@@ -18,7 +18,9 @@ library(neonUtilities)
 
 ```
 
-## NEON Data Products, Sites, and Dates
+***
+
+# Define Data Products, Sites, and Dates
 
 ```{r set NEON conditions}
 
@@ -42,11 +44,18 @@ end_date <- "2023-12"
 
 ```
 
-## Tick Pathogens Data Grab Code
+***
+
+# Import Data
+
+## Tick Pathogen Status
+
+### Import Tick Pathogens Data
 
 ```{r Pull Tick Pathogens, eval=FALSE}
 
 # Pull Tick Pathogen data
+
 list2env((loadByProduct(dpID = tick_pathogens,
                         site = my_sites,
                         include.provisional = FALSE,
@@ -56,26 +65,29 @@ list2env((loadByProduct(dpID = tick_pathogens,
 
 ```
 
-## Tick Pathogen Status
+### Save Tick Pathogen Data
 
 ```{r save tick pathogen csv, eval=FALSE}
 
-# Variable names
+# Save variable file for tick pathogen status table
 
 variables_10092 %>% 
-  write_csv(here("data", "raw", "tick_pathogen_variable.csv"))
+  write_csv(here("data", "raw", "tick_pathogen_status_variable.csv"))
 
-# Tick Pathogen Y/N
+# Save data file with tick pathogen status information (Y/N)
 
 tck_pathogen %>% 
-  write_csv(here("data", "raw", "tick_pathogen_status.csv"))
+  write_csv(here("data", "raw", "tick_pathogen_status_data.csv"))
 ```
 
-## Tick Abundance Data Grab Code
+## Tick Abundance Data
+
+### Import Tick Abundance Data
 
 ```{r Pull Tick Abundance, eval=FALSE}
 
 # Pull Tick Abundance data
+
 list2env((loadByProduct(dpID = tick_abundance,
                         site = my_sites,
                         include.provisional = FALSE,
@@ -85,26 +97,29 @@ list2env((loadByProduct(dpID = tick_abundance,
 
 ```
 
-## Tick Abundance Status
+### Save Tick Abundance Status
 
 ```{r save tick abundance csv, eval=FALSE}
 
-# Variable names
+# Save variable file for tick abundance table
 
 variables_10093 %>% 
   write_csv(here("data", "raw", "tick_abundance_variable.csv"))
 
-# Tick Abundance Y/N
+# Save data file with tick abundance data (numbers/count)
 
 tck_fielddata %>% 
-  write_csv(here("data", "raw", "tick_abundance_status.csv"))
+  write_csv(here("data", "raw", "tick_abundance_data.csv"))
 ```
 
-## Relative Temperature Grab Code
+## Relative Humidity Data
+
+### Import Relative Temperature Data
 
 ```{r Pull Relative Temperature, eval=FALSE}
 
 # Pull Relative Temperature data
+
 list2env((loadByProduct(dpID = relative_humidity,
                         site = my_sites,
                         include.provisional = FALSE,
@@ -114,17 +129,19 @@ list2env((loadByProduct(dpID = relative_humidity,
 
 ```
 
-## Relevant Temperature Status
+### Save Relevant Temperature Data
 
 ```{r save relevant temperature csv, eval=FALSE}
 
-# Variable names
+# Save variable file for relative humidity data set
 
 variables_00098 %>% 
-  write_csv(here("data", "raw", "relevant_temperature_variable.csv"))
+  write_csv(here("data", "raw", "relative_humidity_variable.csv"))
 
-# Mean Temperature WARNING LARGE FILE DON'T RUN!!
+# Save data file for relative humidity set
+# WARNING!!!!! Large file that exceeds GitHub maximum file size - must be processed before pushing!!!
 
-RH_30min %>% 
-  write_csv(here("data", "raw", "mean_temp_data.csv"))
+RH_30min %>%
+  write_csv(here("data", "raw", "relative_humidity_data.csv"))
+
 ```
