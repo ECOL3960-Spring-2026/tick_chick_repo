@@ -99,3 +99,32 @@ variables_10093 %>%
 tck_fielddata %>% 
   write_csv(here("data", "raw", "tick_abundance_status.csv"))
 ```
+
+## Relative Temperature Grab Code
+
+```{r Pull Relative Temperature, eval=FALSE}
+
+# Pull Relative Temperature data
+list2env((loadByProduct(dpID = relative_humidity,
+                        site = my_sites,
+                        include.provisional = FALSE,
+                        startdate = start_date,
+                        enddate = end_date)),
+         .GlobalEnv)
+
+```
+
+## Relevant Temperature Status
+
+```{r save relevant temperature csv, eval=FALSE}
+
+# Variable names
+
+variables_00098 %>% 
+  write_csv(here("data", "raw", "relevant_temperature_variable.csv"))
+
+# Mean Temperature WARNING LARGE FILE DON'T RUN!!
+
+RH_30min %>% 
+  write_csv(here("data", "raw", "mean_temp_data.csv"))
+```
