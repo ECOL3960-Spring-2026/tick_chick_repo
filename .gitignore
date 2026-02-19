@@ -46,6 +46,3 @@ docs/
 # translation temp files
 po/*~
 
-# RStudio Connect folder
-rsconnect/
-data/raw/mean_temp_data.csv
