@@ -1,0 +1,34 @@
+---
+title: "neon_data_access"
+output: html_document
+date: "2026-02-19"
+---
+
+## Import Packages
+
+```{r load packages, message = FALSE}
+
+#install.packages("tidyverse")
+#install.packages("here")
+#install.packages("neonUtilities")
+
+library(tidyverse)
+library(here)
+library(neonUtilities)
+
+```
+
+## NEON Data Products, Sites, and Dates
+
+```{r set NEON conditions}
+
+# Tick Pathogen Status
+tick_pathogens <- "DP1.10092.001"
+
+# Relative Humidity
+relative_humidity <- "DP1.00098.001"
+
+# Tick Abundance - drag cloth
+tick_abundance <- "DP1.10093.001"
+
+```
