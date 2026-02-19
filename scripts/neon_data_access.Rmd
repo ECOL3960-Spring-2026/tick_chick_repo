@@ -31,4 +31,12 @@ relative_humidity <- "DP1.00098.001"
 # Tick Abundance - drag cloth
 tick_abundance <- "DP1.10093.001"
 
+# Assigning two sites
+my_sites <- c("HARV","DELA")
+
+# Start date (as YYYY-MM)
+start_date <- "2016-01"
+
+# End date (as YYYY-MM)
+end_date <- "2023-12"
 ```
