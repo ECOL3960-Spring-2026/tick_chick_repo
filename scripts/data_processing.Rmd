@@ -38,3 +38,18 @@ temperature_data %>%
 
 ```
 
+# Tick Abundance Data
+
+```{r, process tick abundance data, warning=FALSE}
+
+# Access tick abundance data CSV and select useful columns
+
+abundance_data <- read_csv(here("data","raw","tick_abundance_data.csv"))
+
+abundance_data <- abundance_data %>% select(siteID, plotID, plotType, nlcdClass, elevation, collectDate, eventID, sampleID, samplingMethod, adultCount, nymphCount, larvaCount)
+
+abundance_data %>% 
+  write_csv(here("data","processed","abundance_data.csv"))
+
+```
+
