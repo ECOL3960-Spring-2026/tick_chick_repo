@@ -53,3 +53,17 @@ abundance_data %>%
 
 ```
 
+# Tick Pathogen Status Data
+
+```{r, process tick pathogen status data, warning=FALSE}
+
+# Access tick pathogen status data CSV and select useful columns
+
+pathogen_status_data <- read_csv(here("data","raw","tick_pathogen_status_data.csv"))
+
+pathogen_status_data <- pathogen_status_data %>% select(siteID, plotID, plotType, nlcdClass, elevation, collectDate, individualCount, testResult, testPathogenName, subsampleID)
+
+pathogen_status_data %>% 
+  write_csv(here("data","processed","pathogen_status_data.csv"))
+
+```
