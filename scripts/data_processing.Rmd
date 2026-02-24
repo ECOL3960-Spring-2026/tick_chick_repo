@@ -10,14 +10,14 @@ date: "2026-02-19"
 
 #install.packages("tidyverse")
 #install.packages("here")
-#install.packages("neonUtilities")
 #install.packages("dplyr")
+install.packages("lubridate")
 
 
 library(tidyverse)
 library(here)
-library(neonUtilities)
 library(dplyr)
+library(lubridate)
 
 ```
 
@@ -25,20 +25,68 @@ library(dplyr)
 
 # Relative Humidity Data
 
+## Processed CSV 
+
 ```{r, process relative humidity data, warning=FALSE}
 
 # Access humidity data CSV and select useful columns
+# WARNING: file not stored in GitHub because raw data file is too large :(
 
 humidity_data <- read_csv(here("data","raw","relative_humidity_data.csv"))
 
 temperature_data <- humidity_data %>% select(siteID, startDateTime, endDateTime, tempRHMean)
 
-temperature_data %>% 
-  write_csv(here("data","processed","temperature_data.csv"))
+temperature_data %>% write_csv(here("data","processed","temperature_data.csv"))
 
 ```
 
+## Calculate Daily and Monthly Temperatures
+
+```{r, calculate temperature data, warning=FALSE}
+
+temperature_data <- read_csv(here("data","processed","temperature_data.csv"))
+
+# Create table with daily mean, max, min temperatures
+
+daily_temp_data <- temperature_data |> 
+  mutate(
+    date = as_date(startDateTime),
+  ) |>
+  group_by(siteID, date) |>
+  summarize(
+    mean_temp = mean(tempRHMean, na.rm = TRUE),
+    max_temp = max(tempRHMean, na.rm = TRUE),
+    min_temp = min(tempRHMean, na.rm = TRUE)
+  )
+
+daily_temp_data |> write_csv(here("data","processed","daily_temp_data.csv"))
+
+# Create table with monthly/year mean, max, min temperatures
+
+monthly_temp_data <- temperature_data |>
+  mutate(
+    date = as_date(startDateTime),
+    month = month(date),
+    year = year(date)
+  ) |>
+  group_by(siteID, year, month) |>
+  summarize(
+    mean_temp = mean(tempRHMean, na.rm = TRUE),
+    max_temp = max(tempRHMean, na.rm = TRUE),
+    min_temp = min(tempRHMean, na.rm = TRUE)
+  )
+
+monthly_temp_data |> write_csv(here("data","processed","monthly_temp_data.csv"))
+
+
+```
+
+
+***
+
 # Tick Abundance Data
+
+## Processed CSV 
 
 ```{r, process tick abundance data, warning=FALSE}
 
@@ -53,7 +101,13 @@ abundance_data %>%
 
 ```
 
+## 
+
+***
+
 # Tick Pathogen Status Data
+
+## Processed CSV 
 
 ```{r, process tick pathogen status data, warning=FALSE}
 
