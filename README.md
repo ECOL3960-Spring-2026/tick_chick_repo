@@ -8,11 +8,14 @@ During this project, our team will examine how mean seasonal temperatures affect
 ## Planned Data to Use
 We plan to use these NEON datasets:
 - DP1.10092.001 - Tick pathogen status (testResult, maybe testPathogenName)
+This dataset will inform whether the ticks are infected by pathogens or not.
 - DP1.00098.001 - Relative humidity (tempRHMean)
 	- Alternative: DP1.00005.001 - Biological (surface) temperature (bioTempMean)
+This dataset is relavent because it contains the mean temperature data which will inform us whether there is a relationship between temperature and tick pathogen status.
 - DP1.10093.001 - Ticks sampled using drag cloths (adultCount, nymphCount, larvaCount, individualCount)
+This dataset informs our group of the tick abundance to measure the pathogen prevalence in the tick populations.
   
-The data includes the measures of data for tick pathogen status, relative humidity, (alternative) surface temperature, and ticks sampled from drag cloths. We are viewing data in site HARV. We are retrieving our data from NEON database.
+The data includes the measures for tick pathogen status, relative humidity, (alternative) surface temperature, and ticks sampled from drag cloths. We are viewing data in site HARV because of the extensive amount of data points in this site. We are retrieving our data from NEON database to support or reject our hypothesis with existing data.
 
 
 ## Citations for the NEON data products
