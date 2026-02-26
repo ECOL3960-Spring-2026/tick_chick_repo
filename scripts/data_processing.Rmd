@@ -34,9 +34,11 @@ library(lubridate)
 
 humidity_data <- read_csv(here("data","raw","relative_humidity_data.csv"))
 
-temperature_data <- humidity_data %>% select(siteID, startDateTime, endDateTime, tempRHMean)
+temperature_data <- humidity_data %>% 
+  select(siteID, startDateTime, endDateTime, tempRHMean)
 
-temperature_data %>% write_csv(here("data","processed","temperature_data.csv"))
+temperature_data %>% 
+  write_csv(here("data","processed","temperature_data.csv"))
 
 ```
 
@@ -94,7 +96,9 @@ monthly_temp_data |> write_csv(here("data","processed","monthly_temp_data.csv"))
 
 abundance_data <- read_csv(here("data","raw","tick_abundance_data.csv"))
 
-abundance_data <- abundance_data %>% select(siteID, plotID, plotType, nlcdClass, elevation, collectDate, eventID, sampleID, samplingMethod, adultCount, nymphCount, larvaCount)
+abundance_data <- abundance_data %>% 
+  select(siteID, plotID, plotType, nlcdClass, elevation, collectDate, eventID, sampleID,
+         samplingMethod, adultCount, nymphCount, larvaCount)
 
 abundance_data %>% 
   write_csv(here("data","processed","abundance_data.csv"))
@@ -115,7 +119,9 @@ abundance_data %>%
 
 pathogen_status_data <- read_csv(here("data","raw","tick_pathogen_status_data.csv"))
 
-pathogen_status_data <- pathogen_status_data %>% select(siteID, plotID, plotType, nlcdClass, elevation, collectDate, individualCount, testResult, testPathogenName, subsampleID)
+pathogen_status_data <- pathogen_status_data %>% 
+  select(siteID, plotID, plotType, nlcdClass, elevation, collectDate, individualCount, testResult, 
+         testPathogenName, subsampleID)
 
 pathogen_status_data %>% 
   write_csv(here("data","processed","pathogen_status_data.csv"))
