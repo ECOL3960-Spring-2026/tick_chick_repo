@@ -11,7 +11,7 @@ date: "2026-02-19"
 #install.packages("tidyverse")
 #install.packages("here")
 #install.packages("dplyr")
-install.packages("lubridate")
+#install.packages("lubridate")
 
 
 library(tidyverse)
@@ -21,11 +21,11 @@ library(lubridate)
 
 ```
 
-***
+------------------------------------------------------------------------
 
 # Relative Humidity Data
 
-## Processed CSV 
+## Process Raw CSV
 
 ```{r, process relative humidity data, warning=FALSE}
 
@@ -42,7 +42,7 @@ temperature_data %>%
 
 ```
 
-## Calculate Daily and Monthly Temperatures
+## Create Daily Temperature Data
 
 ```{r, calculate temperature data, warning=FALSE}
 
@@ -63,6 +63,14 @@ daily_temp_data <- temperature_data |>
 
 daily_temp_data |> write_csv(here("data","processed","daily_temp_data.csv"))
 
+```
+
+## Create Monthly Temperature Data
+
+```{r, calculate monthly temperature data, warning=FALSE}
+
+temperature_data <- read_csv(here("data","processed","temperature_data.csv"))
+
 # Create table with monthly/year mean, max, min temperatures
 
 monthly_temp_data <- temperature_data |>
@@ -80,15 +88,13 @@ monthly_temp_data <- temperature_data |>
 
 monthly_temp_data |> write_csv(here("data","processed","monthly_temp_data.csv"))
 
-
 ```
 
-
-***
+------------------------------------------------------------------------
 
 # Tick Abundance Data
 
-## Processed CSV 
+## Process Raw CSV
 
 ```{r, process tick abundance data, warning=FALSE}
 
@@ -97,21 +103,19 @@ monthly_temp_data |> write_csv(here("data","processed","monthly_temp_data.csv"))
 abundance_data <- read_csv(here("data","raw","tick_abundance_data.csv"))
 
 abundance_data <- abundance_data %>% 
-  select(siteID, plotID, plotType, nlcdClass, elevation, collectDate, eventID, sampleID,
-         samplingMethod, adultCount, nymphCount, larvaCount)
+  select(siteID, plotID, nlcdClass, elevation, collectDate, sampleID,
+         adultCount, nymphCount, larvaCount)
 
 abundance_data %>% 
   write_csv(here("data","processed","abundance_data.csv"))
 
 ```
 
-## 
-
-***
+------------------------------------------------------------------------
 
 # Tick Pathogen Status Data
 
-## Processed CSV 
+## Process Raw CSV
 
 ```{r, process tick pathogen status data, warning=FALSE}
 
@@ -120,7 +124,7 @@ abundance_data %>%
 pathogen_status_data <- read_csv(here("data","raw","tick_pathogen_status_data.csv"))
 
 pathogen_status_data <- pathogen_status_data %>% 
-  select(siteID, plotID, plotType, nlcdClass, elevation, collectDate, individualCount, testResult, 
+  select(siteID, plotID, nlcdClass, elevation, collectDate, individualCount, testResult, 
          testPathogenName, subsampleID)
 
 pathogen_status_data %>% 
