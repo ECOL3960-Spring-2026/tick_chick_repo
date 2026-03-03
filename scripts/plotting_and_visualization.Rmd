@@ -1,0 +1,29 @@
+---
+title: "plotting_tick_abundance"
+author: "Claire Morgan"
+date: "2026-03-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load in Packages and Data 
+
+```{r load packages and data}
+
+#install(dplyr)
+#install(ggplot2)
+#install.packages(here)
+
+library(dplyr)
+library(ggplot2)
+library(here)
+
+read.csv(here("data","processed","abundance_data.csv")) %>%
+  View("abundance_data.csv")
+
+
+```
+
