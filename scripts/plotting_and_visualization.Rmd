@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Load in Packages and Data 
+## Load in Packages and Data
 
 ```{r load packages and data}
 
@@ -27,3 +27,15 @@ read.csv(here("data","processed","abundance_data.csv")) %>%
 
 ```
 
+##Plot Line Graph for Daily Temperature
+
+```{r}
+
+daily_temperature_data <- read.csv(here("data","processed","daily_temp_data.csv"))
+
+ggplot(data = daily_temperature_data, 
+       aes(x=date,y=mean_temp)
+       ) +
+  geom_line()
+
+```
