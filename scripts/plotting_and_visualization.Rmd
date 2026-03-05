@@ -1,41 +1,103 @@
 ---
-title: "plotting_tick_abundance"
-author: "Claire Morgan"
+title: "Data Exploration Graphs"
 date: "2026-03-03"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 ## Load in Packages and Data
 
-```{r load packages and data}
+Load and install packages that are needed for creating graphs and visualizing data.
 
-#install(dplyr)
-#install(ggplot2)
+```{r}
+
+#install.packages(dplyr)
+#install.packages(ggplot2)
 #install.packages(here)
 
+library(tidyverse)
 library(dplyr)
 library(ggplot2)
 library(here)
 
-read.csv(here("data","processed","abundance_data.csv")) %>%
-  View("abundance_data.csv")
-
-
 ```
 
-##Plot Line Graph for Daily Temperature
+# Temperature Data
+
+Graphs that explore the daily and monthly temperature data sets.
+
+## Data Type Manipulation
+
+Import processed daily temperature information and ensure all dates are date types.
 
 ```{r}
 
 daily_temperature_data <- read.csv(here("data","processed","daily_temp_data.csv"))
 
-ggplot(data = daily_temperature_data, 
-       aes(x=date,y=mean_temp)
-       ) +
+daily_temperature_data <- daily_temperature_data |>
+  mutate(
+    startDateTime = as_date(startDateTime)
+  )
+
+monthly_temperature_data <- read.csv(here("data", "processed", "monthly_temp_data.csv"))
+
+```
+
+## Exploratory Graphs 
+
+### Daily Mean Temperatures
+
+Line graph visualizing how mean daily temperature changed throughout all dates.
+
+```{r}
+
+ggplot(
+  daily_temperature_data,
+  aes(
+    x=startDateTime, 
+    y=mean_temp)
+  ) +
+  facet_wrap(~siteID) +
   geom_line()
 
 ```
+
+### Monthly Mean Temperature
+
+```{r}
+#TODO: make line graph similar to graph above but using monthly temperatures
+
+```
+
+### Monthly Temperature Range
+
+```{r}
+
+# Summarize and group monthly temperature data
+
+monthly_temp_range <- monthly_temperature_data |>
+  group_by(siteID, month) |>
+  summarize(
+    mean = mean(mean_temp, na.rm = TRUE),
+    max = mean(max_temp, na.rm = TRUE),
+    min = mean(min_temp, na.rm = TRUE)
+  )
+
+ggplot(
+  monthly_temp_range,
+  aes(
+    x = month,
+    y = mean
+  )) +
+geom_pointrange(
+  aes(
+    ymin = min,
+    ymax = max
+  )
+) +
+  facet_wrap(~siteID)
+
+```
+
+------------------------------------------------------------------------
+
+

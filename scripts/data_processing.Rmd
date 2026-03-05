@@ -6,7 +6,9 @@ date: "2026-02-19"
 
 # Import and Load Packages
 
-```{r load packages, message = FALSE}
+Import and load the necessary packages.
+
+```{r}
 
 #install.packages("tidyverse")
 #install.packages("here")
@@ -25,9 +27,13 @@ library(lubridate)
 
 # Relative Humidity Data
 
-## Process Raw CSV
+Manipulate the relative humidity data to only have data we need and then create new data sets for daily temperatures and monthly temperatures.
 
-```{r, process relative humidity data, warning=FALSE}
+## Import Raw CSV
+
+Isolate needed fields and save the updated data set to our `processed` folder. The relative humidity data set does not exist in our `raw` folder because the data set is too large to upload.
+
+```{r}
 
 # Access humidity data CSV and select useful columns
 # WARNING: file not stored in GitHub because raw data file is too large :(
@@ -42,25 +48,49 @@ temperature_data %>%
 
 ```
 
-## Create Daily Temperature Data
+## Process Data
 
-```{r, calculate temperature data, warning=FALSE}
+We are processing the data in two steps because the "processed" data file was pre-loaded based off the large data set from humidity data that does not exist in the GitHub. To avoid re-downloading the data, we are using the "processed" data set that is not manipulated.
+
+```{r}
 
 temperature_data <- read_csv(here("data","processed","temperature_data.csv"))
+
+# Isolate needed columns, assign date data type, and filter NAs out of data
+
+temperature_data <- temperature_data |>
+  select(
+    siteID, 
+    startDateTime, 
+    tempRHMean) |>
+  mutate(
+    startDateTime = as_date(startDateTime),
+    month = month(startDateTime),
+    year = year(startDateTime)
+  ) |>
+  filter(
+    !is.na(tempRHMean) & !is.na(startDateTime)
+  )
+
+```
+
+## Create Daily Temperature Data
+
+Create a table that includes mean, max, and minimum daily temperatures. 
+
+```{r}
 
 # Create table with daily mean, max, min temperatures
 
 daily_temp_data <- temperature_data |> 
-  mutate(
-    date = as_date(startDateTime),
-  ) |>
-  group_by(siteID, date) |>
+  group_by(siteID, startDateTime) |>
   summarize(
     mean_temp = mean(tempRHMean, na.rm = TRUE),
     max_temp = max(tempRHMean, na.rm = TRUE),
     min_temp = min(tempRHMean, na.rm = TRUE)
-  ) %>%
-  filter(!is.na("mean_temp") & !is.na("max_temp") & !is.na("min_temp"))
+  ) 
+
+# Save new data set to processed folder
 
 daily_temp_data |> write_csv(here("data","processed","daily_temp_data.csv"))
 
@@ -68,25 +98,22 @@ daily_temp_data |> write_csv(here("data","processed","daily_temp_data.csv"))
 
 ## Create Monthly Temperature Data
 
-```{r, calculate monthly temperature data, warning=FALSE}
+Create a table that includes mean, max, and minimum monthly temperatures. 
 
-temperature_data <- read_csv(here("data","processed","temperature_data.csv"))
+
+```{r}
 
 # Create table with monthly/year mean, max, min temperatures
 
 monthly_temp_data <- temperature_data |>
-  mutate(
-    date = as_date(startDateTime),
-    month = month(date),
-    year = year(date)
-  ) |>
   group_by(siteID, year, month) |>
   summarize(
     mean_temp = mean(tempRHMean, na.rm = TRUE),
     max_temp = max(tempRHMean, na.rm = TRUE),
     min_temp = min(tempRHMean, na.rm = TRUE)
-  ) %>%
-  filter(!is.na("mean_temp") & !is.na("max_temp") & !is.na("min_temp"))
+  )
+
+# Save data set to processed folder
 
 monthly_temp_data |> write_csv(here("data","processed","monthly_temp_data.csv"))
 
@@ -96,21 +123,28 @@ monthly_temp_data |> write_csv(here("data","processed","monthly_temp_data.csv"))
 
 # Tick Abundance Data
 
-## Process Raw CSV
+Manipulate the tick abundance data to only have data we need and ensure there is no "NA" data.
 
-```{r, process tick abundance data, warning=FALSE}
+## Process Data
 
-# Access tick abundance data CSV and select useful columns
+```{r}
+
+# Access tick abundance data CSV
 
 abundance_data <- read_csv(here("data","raw","tick_abundance_data.csv"))
 
+# Select only useful columns, change date to date data type, and filter out NAs
+
 abundance_data <- abundance_data %>% 
-  select(siteID, plotID, nlcdClass, elevation, collectDate, sampleID,
-         adultCount, nymphCount, larvaCount) %>%
+  select(
+    siteID, plotID, nlcdClass, elevation, collectDate, sampleID, adultCount, nymphCount, larvaCount) %>%
   mutate(
-  date = as_date(collectDate),
-) %>%
-  filter(!is.na("sampleID") & !is.na("adultCount") & !is.na("nymphCount") & !is.na("larvaCount"))
+    collectDate = as_date(collectDate)
+  ) %>%
+  filter(
+    !is.na("sampleID") & !is.na("collectDate") & !is.na("adultCount") & !is.na("nymphCount") & !is.na("larvaCount"))
+
+# Save processed data to processed data folder
 
 abundance_data %>% 
   write_csv(here("data","processed","abundance_data.csv"))
@@ -121,21 +155,23 @@ abundance_data %>%
 
 # Tick Pathogen Status Data
 
-## Process Raw CSV
+Manipulate the tick pathogen status data set to only have data we need and ensure there is no "NA" data.
 
-```{r, process tick pathogen status data, warning=FALSE}
+## Process Data
 
-# Access tick pathogen status data CSV and select useful columns
+```{r}
+
+# Select only useful columns, change date to date data type, and filter out NAs
 
 pathogen_status_data <- read_csv(here("data","raw","tick_pathogen_status_data.csv"))
 
 pathogen_status_data <- pathogen_status_data %>% 
-  select(siteID, plotID, nlcdClass, elevation, collectDate, individualCount, testResult, 
-         testPathogenName, subsampleID) %>% 
+  select(
+    siteID, plotID, nlcdClass, elevation, collectDate, individualCount, testResult, testPathogenName, subsampleID) %>% 
   mutate(
-  date = as_date(collectDate),
-) %>% 
-  filter(!is.na("testResult"))
+    collectDate = as_date(collectDate)) %>% 
+  filter(
+    !is.na("testResult") & !is.na("collectDate"))
 
 pathogen_status_data %>% 
   write_csv(here("data","processed","pathogen_status_data.csv"))

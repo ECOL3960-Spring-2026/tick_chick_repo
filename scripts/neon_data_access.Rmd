@@ -6,6 +6,8 @@ date: "2026-02-19"
 
 # Import Packages
 
+Import all necessary packages.
+
 ```{r load packages, message = FALSE}
 
 #install.packages("tidyverse")
@@ -21,6 +23,8 @@ library(neonUtilities)
 ------------------------------------------------------------------------
 
 # Define Data Products, Sites, and Dates
+
+Define the NEON data sets we are using, the relevant sites (HARV and DELA), and the date range that all data sets cover for both sites.
 
 ```{r set NEON conditions}
 
@@ -50,7 +54,11 @@ end_date <- "2023-12"
 
 ## Tick Pathogen Status
 
+Import the raw data for the tick pathogen status and save it to the processed folder.
+
 ### Import Tick Pathogens Data
+
+Import the raw data.
 
 ```{r Pull Tick Pathogens, eval=FALSE}
 
@@ -67,7 +75,9 @@ list2env((loadByProduct(dpID = tick_pathogens,
 
 ### Save Tick Pathogen Data
 
-```{r save tick pathogen csv, eval=FALSE}
+Save the tick pathogen status raw data and variable data to our raw data folder.
+
+```{r}
 
 # Save variable file for tick pathogen status table
 
@@ -82,9 +92,13 @@ tck_pathogen %>%
 
 ## Tick Abundance Data
 
+Import and save the tick abundance data from NEON into our processed folder.
+
 ### Import Tick Abundance Data
 
-```{r Pull Tick Abundance, eval=FALSE}
+Import the NEON data for tick abundance data.
+
+```{r}
 
 # Pull Tick Abundance data
 
@@ -97,9 +111,11 @@ list2env((loadByProduct(dpID = tick_abundance,
 
 ```
 
-### Save Tick Abundance Status
+### Save Tick Abundance
 
-```{r save tick abundance csv, eval=FALSE}
+Save the tick abundance data and variable data into processed folder.
+
+```{r}
 
 # Save variable file for tick abundance table
 
@@ -114,9 +130,13 @@ tck_fielddata %>%
 
 ## Relative Humidity Data
 
+Import and save the relative humidity data in order to get temperature data.
+
 ### Import Relative Temperature Data
 
-```{r Pull Relative Temperature, eval=FALSE}
+Import the NEON relative humidity data.
+
+```{r}
 
 # Pull Relative Temperature data
 
@@ -131,7 +151,9 @@ list2env((loadByProduct(dpID = relative_humidity,
 
 ### Save Relevant Temperature Data
 
-```{r save relevant temperature csv, eval=FALSE}
+Save the relative humidity data into our processed folder. A raw file for relative humidity does not exist in our GitHub because the file size is too large.
+
+```{r}
 
 # Save variable file for relative humidity data set
 
