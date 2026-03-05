@@ -70,6 +70,17 @@ theme_bw()
 ```{r}
 #TODO: make line graph similar to graph above but using monthly temperatures
 
+ggplot(
+  data = monthly_temperature_data,
+  aes(
+    x = month_date, 
+    y = mean_temp,
+    color = siteID) 
+  ) +
+  #facet_wrap(~siteID) +
+  geom_line(size = 0.5) +
+theme_bw()
+
 ```
 
 ### Monthly Temperature Range
