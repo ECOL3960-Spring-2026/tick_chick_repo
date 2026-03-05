@@ -15,8 +15,6 @@ Load and install packages that are needed for creating graphs and visualizing da
 #install.packages(here)
 
 library(tidyverse)
-library(dplyr)
-library(ggplot2)
 library(here)
 
 ```
@@ -31,18 +29,22 @@ Import processed daily temperature information and ensure all dates are date typ
 
 ```{r}
 
-daily_temperature_data <- read.csv(here("data","processed","daily_temp_data.csv"))
+daily_temperature_data <- read_csv(here("data","processed","daily_temp_data.csv"))
 
-daily_temperature_data <- daily_temperature_data |>
-  mutate(
-    startDateTime = as_date(startDateTime)
-  )
-
-monthly_temperature_data <- read.csv(here("data", "processed", "monthly_temp_data.csv"))
+monthly_temperature_data <- read_csv(here("data", "processed", "monthly_temp_data.csv"))
 
 ```
 
-## Exploratory Graphs 
+Create year-month in monthly temperature data
+```{r}
+
+monthly_temperature_data <- monthly_temperature_data %>% 
+  mutate(month_date = make_date(year, month))
+
+```
+
+
+## Exploratory Graphs
 
 ### Daily Mean Temperatures
 
@@ -51,13 +53,15 @@ Line graph visualizing how mean daily temperature changed throughout all dates.
 ```{r}
 
 ggplot(
-  daily_temperature_data,
+  data = daily_temperature_data,
   aes(
-    x=startDateTime, 
-    y=mean_temp)
+    x = startDateTime, 
+    y = mean_temp,
+    color = siteID) 
   ) +
-  facet_wrap(~siteID) +
-  geom_line()
+  #facet_wrap(~siteID) +
+  geom_line(size = 0.2) +
+theme_bw()
 
 ```
 
@@ -97,7 +101,18 @@ geom_pointrange(
   facet_wrap(~siteID)
 
 ```
-
 ------------------------------------------------------------------------
+### Pathogen Status Visualization
 
+```{r}
 
+pathogen_status_data <- read_csv(here("data","processed","pathogen_status_data.csv"))
+
+pathogen_status_data <- pathogen_status_data |>
+  mutate(
+    collectDate = as_date(collectDate)
+  )
+
+monthly_temperature_data <- read.csv(here("data", "processed", "monthly_temp_data.csv"))
+
+```
