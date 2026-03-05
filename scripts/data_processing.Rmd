@@ -115,7 +115,7 @@ monthly_temp_data <- temperature_data |>
 
 # Save data set to processed folder
 
-daily_temp_data |> write_csv(here("data","processed","monthly_temp_data.csv"))
+monthly_temp_data |> write_csv(here("data","processed","monthly_temp_data.csv"))
 
 ```
 
