@@ -119,11 +119,13 @@ geom_pointrange(
 
 pathogen_status_data <- read_csv(here("data","processed","pathogen_status_data.csv"))
 
-pathogen_status_data <- pathogen_status_data |>
-  mutate(
-    collectDate = as_date(collectDate)
-  )
-
-monthly_temperature_data <- read.csv(here("data", "processed", "monthly_temp_data.csv"))
-
 ```
+Filter to keep only positive pathogen results
+```{r}
+
+positive_pathogen <- pathogen_status_data %>% 
+  filter(testResult == "Positive")
+
+#confusion on what "HardTick DNA Quality" in the "testPathogenName" column means and wondering if we can filter it out since it doesn't seem like that is a pathogen
+```
+
