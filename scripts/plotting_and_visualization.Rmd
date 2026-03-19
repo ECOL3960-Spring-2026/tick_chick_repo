@@ -59,7 +59,6 @@ ggplot(
     y = mean_temp,
     color = siteID) 
   ) +
-  #facet_wrap(~siteID) +
   geom_line(size = 0.2) +
 theme_bw()
 
@@ -68,7 +67,6 @@ theme_bw()
 ### Monthly Mean Temperature
 
 ```{r}
-#TODO: make line graph similar to graph above but using monthly temperatures
 
 ggplot(
   data = monthly_temperature_data,
@@ -77,7 +75,6 @@ ggplot(
     y = mean_temp,
     color = siteID) 
   ) +
-  #facet_wrap(~siteID) +
   geom_line(size = 0.5) +
 theme_bw()
 
@@ -113,19 +110,25 @@ geom_pointrange(
 
 ```
 ------------------------------------------------------------------------
-### Pathogen Status Visualization
+### Daily Sum of Pathogen Status
 
 ```{r}
 
 pathogen_status_data <- read_csv(here("data","processed","pathogen_status_data.csv"))
 
 ```
+
 Filter to keep only positive pathogen results
+
 ```{r}
 
 positive_pathogen <- pathogen_status_data %>% 
   filter(testResult == "Positive")
 
 #confusion on what "HardTick DNA Quality" in the "testPathogenName" column means and wondering if we can filter it out since it doesn't seem like that is a pathogen
+
 ```
 
+``` {r}
+
+```

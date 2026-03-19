@@ -1,0 +1,31 @@
+---
+title: "Workflow"
+output: html_document
+---
+
+# The Relationship Between Seasonal Temperature and Tick Pathogen Abundance
+
+------------------------------------------------------------------------
+
+## Import Packages
+
+```{r}
+
+#install.packages("tidyverse")
+#install.packages("here")
+#install.packages("neonUtilities")
+#install.packages("dplyr")
+#install.packages("lubridate")
+
+library(tidyverse)
+library(here)
+library(dplyr)
+library(lubridate)
+library(neonUtilities)
+
+```
+
+------------------------------------------------------------------------
+
+## Load Raw Data
+
