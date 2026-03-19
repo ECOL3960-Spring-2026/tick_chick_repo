@@ -141,8 +141,9 @@ abundance_data <- abundance_data %>%
   mutate(
     collectDate = as_date(collectDate)
   ) %>%
-  filter(
-    !is.na("sampleID") & !is.na("collectDate") & !is.na("adultCount") & !is.na("nymphCount") & !is.na("larvaCount"))
+  drop_na(
+    sampleID , adultCount , nymphCount , larvaCount
+  )
 
 # Save processed data to processed data folder
 
