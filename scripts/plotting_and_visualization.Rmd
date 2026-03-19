@@ -129,17 +129,16 @@ positive_pathogen <- pathogen_status_data %>%
 
 ```
 
-Summarize with counts of positive pathogen status each day
+Summarize with counts of positive pathogen status each month
 
 ``` {r}
 
 
 daily_positive_pathogen <- positive_pathogen |>
   mutate(
-    month = month(collectDate),
-    year = year(collectDate)
+    month = month(collectDate)
   ) |>
-  group_by(siteID, year, month) |>
+  group_by(siteID, month) |>
   summarize(
     positiveCount = n()
   )
@@ -148,10 +147,10 @@ ggplot(
   data = daily_positive_pathogen,
   aes(
     x = month, 
-    y = positiveCount,
-    color = siteID) 
+    y = positiveCount) 
   ) +
-  geom_line(size = 0.5) +
+  geom_point() +
+  facet_wrap(~siteID) +
 theme_bw()
 
 
