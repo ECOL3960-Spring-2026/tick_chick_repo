@@ -1,4 +1,7 @@
 # An Investigation into Abundance of Tick-borne Pathogens
+#### Authors: Claire Morgan, Lindsey Stowell, Madison McDonald, Natalie Meyers
+
+
 
 ## Description of Project
 
