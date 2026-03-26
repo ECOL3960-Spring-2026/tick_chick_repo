@@ -252,6 +252,7 @@ daily_pathogens <- pathogen_status_data |>
 daily_pathogens |> write_csv(here("data","processed","daily_pathogen_count.csv"))
 
 ```
+
 ------------------------------------------------------------------------
 
 # Temperature vs Pathogen Table
@@ -278,4 +279,7 @@ pathogen_vs_temp <- full_join(daily_temp, pathogens)
 
 pathogen_vs_temp <- pathogen_vs_temp %>% 
   drop_na(pathogenCount)
+
+pathogen_vs_temp |> write.csv(here("data","processed","pathogen_vs_temp_data"))
+
 ```
