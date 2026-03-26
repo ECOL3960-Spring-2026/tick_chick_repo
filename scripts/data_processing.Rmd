@@ -280,6 +280,6 @@ pathogen_vs_temp <- full_join(daily_temp, pathogens)
 pathogen_vs_temp <- pathogen_vs_temp %>% 
   drop_na(pathogenCount)
 
-pathogen_vs_temp |> write.csv(here("data","processed","pathogen_vs_temp_data"))
+pathogen_vs_temp |> write.csv(here("data","processed","pathogen_vs_temp_data.csv"))
 
 ```
