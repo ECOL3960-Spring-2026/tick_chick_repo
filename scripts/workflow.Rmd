@@ -1,5 +1,5 @@
 ---
-title: "Workflow"
+title: "Statistical Analyses"
 output: html_document
 ---
 
@@ -28,4 +28,37 @@ library(neonUtilities)
 ------------------------------------------------------------------------
 
 ## Load Raw Data
+
+```{r, load data}
+
+pathvtemp <- read_csv(here("data","processed","pathogen_vs_temp_data.csv"))
+
+```
+## Visualize Temperature vs. Pathogen Count
+
+```{r create figure}
+
+ggplot(
+  data = pathvtemp,
+  aes(
+    x = mean_temp,
+    y = pathogenCount)
+  ) +
+  geom_point() +
+  facet_wrap(~siteID) +
+theme_bw()
+
+```
+
+## Perform Regression
+
+```{r, linear regression}
+
+line_model <- lm(mean_temp ~ pathogenCount,
+                 data = pathvtemp)
+
+summary(line_model)
+```
+
+
 
