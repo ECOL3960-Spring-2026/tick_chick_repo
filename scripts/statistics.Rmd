@@ -1,5 +1,6 @@
 ---
 title: "Statistical Analyses"
+authors: "Claire Morgan, Lindsey Stowell, Madison McDonald, Natalie Meyers"
 output: html_document
 ---
 
@@ -13,7 +14,6 @@ output: html_document
 
 #install.packages("tidyverse")
 #install.packages("here")
-#install.packages("neonUtilities")
 #install.packages("dplyr")
 #install.packages("lubridate")
 
@@ -21,7 +21,6 @@ library(tidyverse)
 library(here)
 library(dplyr)
 library(lubridate)
-library(neonUtilities)
 
 ```
 
@@ -29,11 +28,12 @@ library(neonUtilities)
 
 ## Load Raw Data
 
-```{r, load data}
+```{r}
 
 pathvtemp <- read_csv(here("data","processed","pathogen_vs_temp_data.csv"))
 
 ```
+
 ## Visualize Temperature vs. Pathogen Count
 
 ```{r create figure}
@@ -60,6 +60,7 @@ ln_model <- lm(mean_temp ~ pathogenCount,
 summary(ln_model)
 
 ```
+
 ## Test assumptions of linear model and diagnostic plots
 
 ```{r}

@@ -1,6 +1,6 @@
 ---
 title: "Data Exploration Graphs"
-date: "2026-03-03"
+authors: "Claire Morgan, Lindsey Stowell, Madison McDonald, Natalie Meyers"
 output: html_document
 ---
 
