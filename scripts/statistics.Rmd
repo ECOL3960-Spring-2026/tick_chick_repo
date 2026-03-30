@@ -1,0 +1,170 @@
+---
+title: "Statistical Analyses"
+authors: "Claire Morgan, Lindsey Stowell, Madison McDonald, Natalie Meyers"
+output: html_document
+---
+
+**Testing Seasonal Temperature and Tick Pathogen Abundance**
+
+We are examining if there is a statistically significant relationship between average daily temperatures and the number of positive pathogen tests.
+
+------------------------------------------------------------------------
+
+# Import Packages
+
+Import all necessary packages for the following statistical tests and graphs.
+
+```{r}
+
+#install.packages("tidyverse")
+#install.packages("here")
+#install.packages("dplyr")
+#install.packages("lubridate")
+
+library(tidyverse)
+library(here)
+library(dplyr)
+library(lubridate)
+
+```
+
+------------------------------------------------------------------------
+
+# Load Data
+
+Load the pre-wrangled data from an existing csv file. All data manipulation can be found in the `data_processing.Rmd` file.
+
+```{r}
+
+# Table with average temperature and pathogen counts for each day
+
+pathogen_and_tick_data <- read_csv(here("data","processed","pathogen_vs_temp_data.csv"))
+
+# Table with the total number of pathogens recorded each day
+
+daily_pathogen_count <- read_csv(here("data", "processed", "daily_pathogen_count.csv"))
+
+```
+
+------------------------------------------------------------------------
+
+# Perform Regression Test
+
+A Linear Regression test will be run in order to determine the relationship between average daily temperature (continuous variable) and the number of positive pathogen tests (continuous variable) across all sites. 
+
+This model has average temperature as the predictor that may influence the number of pathogens. 
+
+```{r, linear regression}
+
+ln_model <- lm(pathogenCount ~ mean_temp, data = pathogen_and_tick_data)
+
+summary(ln_model)
+
+```
+
+## Test Assumptions
+
+Now we will test the assumptions that the linear model makes when it runs. This will help us determine if the model is a good fit.
+
+```{r}
+
+# residuals vs. fitted plot
+plot(ln_model, which = 1)
+
+# QQ residuals plot
+plot(ln_model, which = 2)
+
+# Scale-location plot
+plot(ln_model, which = 3)
+
+# Shapiro test of linear model residuals
+shapiro.test(residuals(ln_model))
+
+```
+
+## Summary
+
+A summary of the test output is **F(1, 50) = 0.025, p = 0.88, R2 = -0.02**. Based on the large p-value this is not a statistically significant result and the null hypothesis will fail to be rejected.
+
+The Residuals vs Fitted plot reveals a roughly horizontal line with tails that are relatively close to the line, although there are a decent number of outliers that appear above the horizontal line. This indicates that the mean temperature and pathogen count values may have a linear relationship, although some values may not follow this pattern.
+
+The Q-Q plot shows values that seem to follow the diagonal line, however the tail on the higher end does not stay close to the line. This could mean that the residuals of the linear model are not normally distributed and therefore that the data in each linear model group is not normally distributed.
+
+The Scale-Location plot does not show a uniform horizontal line, although the points do appear to be somewhat randomly distributed around it. This indicates that the categories of data in the model may differ in variance.
+
+Finally, the p-value from the Shapiro test shows a p-value of less than 0.05 which suggests that the residuals of the linear model are not normally distributed. 
+
+When all of these are considered, it is likely that we should fail to reject the null hypothesis.
+
+------------------------------------------------------------------------
+
+# Plot Hypothesis
+
+Next, we will make a scatterplot showing the distribution pathogen counts across all average temperatures.
+
+```{r}
+
+# Create plot
+
+lm_plot <- ggplot(pathogen_and_tick_data,
+                  aes(x = mean_temp,
+                      y = pathogenCount)) +
+  geom_point(alpha = 0.6) + 
+  theme_classic() +
+  labs(
+    x = "Mean Daily Temperature (ºC)",
+    y = "Total Number of Pathogens"
+  )
+
+# Show plot
+
+lm_plot
+
+```
+**Figure 1:** Scatter plot showing the total number of pathogens across the average daily temperatures at the sites. The grey dots represent an individual sample at a particular temperature that has a certain number of positive pathogen tests. There is no statistically significant relationship between the two variables and the dots appear almost randomly scattered along the graph.
+
+------------------------------------------------------------------------
+
+# Monthly Pathogen Status Graph
+
+```{r}
+
+monthly_pathogen_count <- daily_pathogen_count |>
+  mutate(
+    month = month(collectDate)
+  ) |>
+  group_by(month) |>
+  summarise(
+    pathogenCount = sum(pathogenCount)
+  )
+
+# Create graph showing distribution of pathogen counts over the months
+
+ggplot(
+  data = monthly_pathogen_count,
+  aes(
+    x = month, 
+    y = pathogenCount
+    ) 
+  ) +
+  geom_segment(
+    aes(
+      x = month,
+      xend = month,
+      y = 0,
+      yend = pathogenCount
+    ),
+    color = "seagreen"
+  ) +
+  geom_point(
+    color = "seagreen",
+    size = 5
+  ) +
+  labs(
+    x = "Months",
+    y = "Number of Pathogens"
+  ) +
+  theme_bw()
+
+```
+**Figure 2:** A graph bar-graph variant that shows a comparison of the number of tick pathogens that were positive each month. The large green dot is the total number of pathogens for a given month. The line under each dot helps compare the dot locations against each other. A vast majority of tick pathogens are found in the summer months of June. July and August also have significant numbers of positive tests. It is possible that including more sites would yield better results in our study as these sites appear to only test in summer months.
