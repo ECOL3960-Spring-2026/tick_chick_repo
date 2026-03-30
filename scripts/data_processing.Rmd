@@ -255,9 +255,9 @@ daily_pathogens |> write_csv(here("data","processed","daily_pathogen_count.csv")
 
 ------------------------------------------------------------------------
 
-# Temperature vs Pathogen Table
+# Temperature vs Pathogen Count Data
 
-### We are creating a table to show temperature and the number of positive pathogens at each temperature point.
+We are creating a table to show temperature and the number of positive pathogens at each temperature point.
 
 ```{r}
 

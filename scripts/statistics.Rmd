@@ -4,11 +4,15 @@ authors: "Claire Morgan, Lindsey Stowell, Madison McDonald, Natalie Meyers"
 output: html_document
 ---
 
-# The Relationship Between Seasonal Temperature and Tick Pathogen Abundance
+**Testing Seasonal Temperature and Tick Pathogen Abundance**
+
+We are examining if there is a statistically significant relationship between average daily temperatures and the number of positive pathogen tests.
 
 ------------------------------------------------------------------------
 
-## Import Packages
+# Import Packages
+
+Import all necessary packages for the following statistical tests and graphs.
 
 ```{r}
 
@@ -26,44 +30,38 @@ library(lubridate)
 
 ------------------------------------------------------------------------
 
-## Load Raw Data
+# Load Data
+
+Load the pre-wrangled data from an existing csv file. All data manipulation can be found in the `data_processing.Rmd` file.
 
 ```{r}
 
-pathvtemp <- read_csv(here("data","processed","pathogen_vs_temp_data.csv"))
+pathogen_and_tick_data <- read_csv(here("data","processed","pathogen_vs_temp_data.csv"))
 
 ```
 
-## Visualize Temperature vs. Pathogen Count
+------------------------------------------------------------------------
 
-```{r create figure}
+# Perform Regression Test
 
-ggplot(
-  data = pathvtemp,
-  aes(
-    x = mean_temp,
-    y = pathogenCount)
-  ) +
-  geom_point() +
-  facet_wrap(~siteID) +
-theme_bw()
+A Linear Regression test will be run in order to determine the relationship between average daily temperature (continuous variable) and the number of positive pathogen tests (continuous variable) across all sites. 
 
-```
-
-## Perform Regression
+This model has average temperature as the predictor that may influence the number of pathogens. 
 
 ```{r, linear regression}
 
-ln_model <- lm(mean_temp ~ pathogenCount,
-                 data = pathvtemp)
+ln_model <- lm(pathogenCount ~ mean_temp, data = pathogen_and_tick_data)
 
 summary(ln_model)
 
 ```
 
-## Test assumptions of linear model and diagnostic plots
+## Test Assumptions
+
+Now we will test the assumptions that the linear model makes when it runs. This will help us determine if the model is a good fit.
 
 ```{r}
+
 # residuals vs. fitted plot
 plot(ln_model, which = 1)
 
@@ -78,27 +76,46 @@ shapiro.test(residuals(ln_model))
 
 ```
 
-*** note that the p-value from Shapiro test was significant (p<0.05), suggesting that the residuals of the linear model are not normally distributed. lines for 3 plots are also giving wonky so like maybe data doesn't meet assumptions for linear regression, not sure how strict adherence is to 0 horizontal because they're kinda roughly 0?
+## Summary
 
-## Plot Linear Regression
+A summary of the test output is **F(1, 50) = 0.025, p = 0.88, R2 = -0.02**. Based on the large p-value this is not a statistically significant result and the null hypothesis will fail to be rejected.
+
+The Residuals vs Fitted plot reveals a roughly horizontal line with tails that are relatively close to the line, although there are a decent number of outliers that appear above the horizontal line. This indicates that the mean temperature and pathogen count values may have a linear relationship, although some values may not follow this pattern.
+
+The Q-Q plot shows values that seem to follow the diagonal line, however the tail on the higher end does not stay close to the line. This could mean that the residuals of the linear model are not normally distributed and therefore that the data in each linear model group is not normally distributed.
+
+The Scale-Location plot does not show a uniform horizontal line, although the points do appear to be somewhat randomly distributed around it. This indicates that the categories of data in the model may differ in variance.
+
+Finally, the p-value from the Shapiro test shows a p-value of less than 0.05 which suggests that the residuals of the linear model are not normally distributed. 
+
+When all of these are considered, it is likely that we should fail to reject the null hypothesis.
+
+
+------------------------------------------------------------------------
+
+# Plot Hypothesis
+
+Next, we will make a scatterplot showing the distribution pathogen counts across all average temperatures.
 
 ```{r}
 
-lm_plot <- ggplot(pathvtemp,
+# Create plot
+
+lm_plot <- ggplot(pathogen_and_tick_data,
                   aes(x = mean_temp,
                       y = pathogenCount)) +
   geom_point(alpha = 0.6) + 
-  geom_smooth(method = "lm", se = TRUE, color = "seagreen") +
   theme_classic() +
   labs(
     x = "Mean Daily Temperature (ºC)",
-    y = "Pathogen Count",
-    title = "Relationship of Daily Temperature and Pathogen Count at HARV Site"
+    y = "Total Number of Pathogens"
   )
+
+# Show plot
 
 lm_plot
 
 ```
-
+**Figure 1:** Scatter plot showing the total number of pathogens across the average daily temperatures at the sites. There is no statistically significant relationship between the two variables. 
 
 
