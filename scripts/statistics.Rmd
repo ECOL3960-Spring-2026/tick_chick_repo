@@ -36,7 +36,13 @@ Load the pre-wrangled data from an existing csv file. All data manipulation can 
 
 ```{r}
 
+# Table with average temperature and pathogen counts for each day
+
 pathogen_and_tick_data <- read_csv(here("data","processed","pathogen_vs_temp_data.csv"))
+
+# Table with the total number of pathogens recorded each day
+
+daily_pathogen_count <- read_csv(here("data", "processed", "daily_pathogen_count.csv"))
 
 ```
 
@@ -90,7 +96,6 @@ Finally, the p-value from the Shapiro test shows a p-value of less than 0.05 whi
 
 When all of these are considered, it is likely that we should fail to reject the null hypothesis.
 
-
 ------------------------------------------------------------------------
 
 # Plot Hypothesis
@@ -116,6 +121,50 @@ lm_plot <- ggplot(pathogen_and_tick_data,
 lm_plot
 
 ```
-**Figure 1:** Scatter plot showing the total number of pathogens across the average daily temperatures at the sites. There is no statistically significant relationship between the two variables. 
+**Figure 1:** Scatter plot showing the total number of pathogens across the average daily temperatures at the sites. The grey dots represent an individual sample at a particular temperature that has a certain number of positive pathogen tests. There is no statistically significant relationship between the two variables and the dots appear almost randomly scattered along the graph.
 
+------------------------------------------------------------------------
 
+# Monthly Pathogen Status Graph
+
+```{r}
+
+monthly_pathogen_count <- daily_pathogen_count |>
+  mutate(
+    month = month(collectDate)
+  ) |>
+  group_by(month) |>
+  summarise(
+    pathogenCount = sum(pathogenCount)
+  )
+
+# Create graph showing distribution of pathogen counts over the months
+
+ggplot(
+  data = monthly_pathogen_count,
+  aes(
+    x = month, 
+    y = pathogenCount
+    ) 
+  ) +
+  geom_segment(
+    aes(
+      x = month,
+      xend = month,
+      y = 0,
+      yend = pathogenCount
+    ),
+    color = "seagreen"
+  ) +
+  geom_point(
+    color = "seagreen",
+    size = 5
+  ) +
+  labs(
+    x = "Months",
+    y = "Number of Pathogens"
+  ) +
+  theme_bw()
+
+```
+**Figure 2:** A graph bar-graph variant that shows a comparison of the number of tick pathogens that were positive each month. The large green dot is the total number of pathogens for a given month. The line under each dot helps compare the dot locations against each other. A vast majority of tick pathogens are found in the summer months of June. July and August also have significant numbers of positive tests. It is possible that including more sites would yield better results in our study as these sites appear to only test in summer months.

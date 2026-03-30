@@ -241,8 +241,8 @@ pathogen_status_data <- read_csv(here("data","processed","pathogen_status_data.c
 # Create table with daily count of positive tests
 
 daily_pathogens <- pathogen_status_data |>
-  group_by(siteID, collectDate) |>
   filter(testResult == "Positive") |>
+  group_by(siteID, collectDate) |>
   summarize(
     pathogenCount = n()
   )
@@ -255,7 +255,7 @@ daily_pathogens |> write_csv(here("data","processed","daily_pathogen_count.csv")
 
 ------------------------------------------------------------------------
 
-# Temperature vs Pathogen Count Data
+# Average Temperature vs Pathogen Count Data
 
 We are creating a table to show temperature and the number of positive pathogens at each temperature point.
 
@@ -270,7 +270,7 @@ daily_temp <- read_csv(here("data","processed","daily_temp_data.csv"))
 daily_temp <- daily_temp %>% 
   rename(collectDate = startDateTime)
 
-# Common columns between daily_temp and pathogens data
+# Find common columns and join tables
 
 names(pathogens) %>%
   intersect(names(daily_temp))
@@ -279,6 +279,8 @@ pathogen_vs_temp <- full_join(daily_temp, pathogens)
 
 pathogen_vs_temp <- pathogen_vs_temp %>% 
   drop_na(pathogenCount)
+
+# Save new table to CSV
 
 pathogen_vs_temp |> write.csv(here("data","processed","pathogen_vs_temp_data.csv"))
 
