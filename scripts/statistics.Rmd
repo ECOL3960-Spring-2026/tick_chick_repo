@@ -90,7 +90,7 @@ The Scale-Location plot does not show a uniform horizontal line, although the po
 
 Finally, the p-value from the Shapiro test shows a p-value of less than 0.05 which suggests that the residuals of the linear model are not normally distributed. 
 
-When all of these are considered, it is likely that we should fail to reject the null hypothesis.
+When all of these are considered, it is likely that we should fail to reject the null hypothesis. **\*\* KF Note \*\* This doesn't lead us to fail-to-reject so much as it tells us that we need to try to normalize our data or try a statistic that does not assume an underlying normal distribution**
 
 ------------------------------------------------------------------------
 
