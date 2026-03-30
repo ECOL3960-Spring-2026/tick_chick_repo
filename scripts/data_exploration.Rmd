@@ -10,9 +10,8 @@ Load and install packages that are needed for creating graphs and visualizing da
 
 ```{r}
 
-#install.packages(dplyr)
-#install.packages(ggplot2)
-#install.packages(here)
+#install.packages("tidyverse")
+#install.packages("here")
 
 library(tidyverse)
 library(here)
