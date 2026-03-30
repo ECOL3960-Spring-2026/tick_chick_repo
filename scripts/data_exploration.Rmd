@@ -130,6 +130,8 @@ positive_pathogen <- pathogen_status_data %>%
 
 #confusion on what "HardTick DNA Quality" in the "testPathogenName" column means and wondering if we can filter it out since it doesn't seem like that is a pathogen
 
+# KF: Yes, I think you want to omit it; it is a quality control indicator column
+
 ```
 
 Summarize with counts of positive pathogen status each month
