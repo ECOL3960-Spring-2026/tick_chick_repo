@@ -87,7 +87,8 @@ daily_temp_data <- temperature_data |>
 
 # Save new data set to processed folder
 
-daily_temp_data |> write_csv(here("data","processed","daily_temp_data.csv"))
+daily_temp_data |> 
+  write_csv(here("data","processed","daily_temp_data.csv"))
 
 ```
 
@@ -109,7 +110,8 @@ monthly_temp_data <- temperature_data |>
 
 # Save data set to processed folder
 
-monthly_temp_data |> write_csv(here("data","processed","monthly_temp_data.csv"))
+monthly_temp_data |> 
+  write_csv(here("data","processed","monthly_temp_data.csv"))
 
 ```
 
@@ -193,7 +195,9 @@ pathogen_status_data <- pathogen_status_data %>%
     year = year(collectDate)
     ) %>% 
   filter(
-    !is.na("testResult") & !is.na("collectDate") & testPathogenName != "HardTick DNA Quality"
+    !is.na("testResult") & 
+      !is.na("collectDate") & 
+      testPathogenName != "HardTick DNA Quality"
     )
 
 pathogen_status_data %>% 
@@ -244,7 +248,8 @@ daily_pathogens <- pathogen_status_data |>
 
 # Save data set to processed folder
 
-daily_pathogens |> write_csv(here("data","processed","daily_pathogen_count.csv"))
+daily_pathogens |> 
+  write_csv(here("data","processed","daily_pathogen_count.csv"))
 
 ```
 
