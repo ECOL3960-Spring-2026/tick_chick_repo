@@ -105,7 +105,11 @@ geom_pointrange(
     ymax = max
   )
 ) +
-  facet_wrap(~siteID)
+  facet_wrap(~siteID) +
+  labs(y = "Range of mean monthly temperatures (C)") +
+  scale_x_continuous(limits = c(1, 12),
+                     breaks = seq(1, 12, 1)) +
+  theme_bw()
 
 ```
 ------------------------------------------------------------------------
