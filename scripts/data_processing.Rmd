@@ -216,9 +216,13 @@ Create a table that includes a count of positive pathogen tests each month.
 
 monthly_pathogens <- pathogen_status_data |>
   group_by(siteID, year, month) |>
-  filter(testResult == "Positive") |>
   summarize(
-    pathogenCount = n()
+    positiveCount = sum(testResult == "Positive"),
+    negativeCount = sum(testResult == "Negative"),
+    totalCount = n()
+   ) |>
+  mutate(
+    positiveProportion = round(positiveCount / totalCount, 2)
   )
 
 # Save data set to processed folder
@@ -240,10 +244,14 @@ pathogen_status_data <- read_csv(here("data","processed","pathogen_status_data.c
 # Create table with daily count of positive tests
 
 daily_pathogens <- pathogen_status_data |>
-  filter(testResult == "Positive") |>
   group_by(siteID, collectDate) |>
   summarize(
-    pathogenCount = n()
+    positiveCount = sum(testResult == "Positive"),
+    negativeCount = sum(testResult == "Negative"),
+    totalCount = n()
+   ) |>
+  mutate(
+    positiveProportion = round(positiveCount / totalCount, 2)
   )
 
 # Save data set to processed folder
@@ -278,7 +286,7 @@ names(pathogens) %>%
 pathogen_vs_temp <- full_join(daily_temp, pathogens) 
 
 pathogen_vs_temp <- pathogen_vs_temp %>% 
-  drop_na(pathogenCount)
+  drop_na(positiveProportion)
 
 # Save new table to CSV
 
