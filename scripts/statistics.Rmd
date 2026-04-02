@@ -52,7 +52,7 @@ This model has average temperature as the predictor that may influence the numbe
 
 ```{r, linear regression}
 
-ln_model <- lm(pathogenCount ~ mean_temp, data = pathogen_and_tick_data)
+ln_model <- lm(positiveProportion ~ mean_temp, data = pathogen_and_tick_data)
 
 summary(ln_model)
 
@@ -80,7 +80,7 @@ shapiro.test(residuals(ln_model))
 
 ## Summary
 
-A summary of the test output is **F(1, 50) = 0.025, p = 0.88, R2 = -0.02**. Based on the large p-value this is not a statistically significant result and the null hypothesis will fail to be rejected.
+A summary of the test output is **F(1, 64) = 5.418, p = 0.023, R2 = 0.078**. Based on the p-value being less than 0.05, these results are statistically significant.
 
 The Residuals vs Fitted plot reveals a roughly horizontal line with tails that are relatively close to the line, although there are a decent number of outliers that appear above the horizontal line. This indicates that the mean temperature and pathogen count values may have a linear relationship, although some values may not follow this pattern.
 

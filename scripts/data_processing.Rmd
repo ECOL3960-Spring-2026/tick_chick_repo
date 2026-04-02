@@ -231,7 +231,7 @@ monthly_pathogens |> write_csv(here("data","processed","monthly_pathogen_count.c
 
 ```
 
-## Create Daily Positive Status Data
+## Create Daily Status Data
 
 Create a table that includes a count of positive pathogen tests each day.
 **Note:** Pathogen status is only tested on up to 130 nymphs.
@@ -241,7 +241,11 @@ Create a table that includes a count of positive pathogen tests each day.
 
 pathogen_status_data <- read_csv(here("data","processed","pathogen_status_data.csv"))
 
-# Create table with daily count of positive tests
+# Drop rows with NA as the value for the pathogen test results
+
+pathogen_status_data <- pathogen_status_data |> drop_na(testResult)
+
+# Create table with daily count of positive, negative, and total tests
 
 daily_pathogens <- pathogen_status_data |>
   group_by(siteID, collectDate) |>
@@ -263,7 +267,7 @@ daily_pathogens |>
 
 ------------------------------------------------------------------------
 
-# Average Temperature vs Pathogen Count Data
+# Average Temperature vs Positive Pathogen Proportion Data
 
 We are creating a table to show temperature and the number of positive pathogens at each temperature point.
 
@@ -275,15 +279,16 @@ pathogens <- read_csv(here("data","processed","daily_pathogen_count.csv"))
 
 daily_temp <- read_csv(here("data","processed","daily_temp_data.csv"))
 
+# Rename the date column in daily_temp in order to join tables
+
 daily_temp <- daily_temp %>% 
   rename(collectDate = startDateTime)
 
-# Find common columns and join tables
+# Join tables together
 
-names(pathogens) %>%
-  intersect(names(daily_temp))
+pathogen_vs_temp <- full_join(daily_temp, pathogens)
 
-pathogen_vs_temp <- full_join(daily_temp, pathogens) 
+# Drop all rows with NA in the pathogen columns
 
 pathogen_vs_temp <- pathogen_vs_temp %>% 
   drop_na(positiveProportion)
