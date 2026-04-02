@@ -36,6 +36,7 @@ Isolate needed fields and save the updated data set to our `processed` folder. T
 humidity_data <- read_csv(here("data","raw","relative_humidity_data.csv"))
 
 temperature_data <- humidity_data %>% 
+  filter(tempRHMean > -40 & tempRHMean < 40) %>% 
   select(siteID, startDateTime, endDateTime, tempRHMean)
 
 temperature_data %>% 
