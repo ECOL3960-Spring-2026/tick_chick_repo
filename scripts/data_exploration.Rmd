@@ -28,6 +28,8 @@ Import processed daily temperature information and ensure all dates are date typ
 
 ```{r}
 
+# Import Data
+
 daily_temperature_data <- read_csv(here("data","processed","daily_temp_data.csv"))
 
 monthly_temperature_data <- read_csv(here("data", "processed", "monthly_temp_data.csv"))
@@ -138,6 +140,7 @@ Summarize with counts of positive pathogen status each month
 
 ``` {r}
 
+# Tick Count Graph
 
 daily_positive_pathogen <- positive_pathogen |>
   mutate(
@@ -157,6 +160,5 @@ ggplot(
   geom_point() +
   facet_wrap(~siteID) +
 theme_bw()
-
 
 ```

@@ -36,9 +36,15 @@ Load the pre-wrangled data from an existing csv file. All data manipulation can 
 
 pathogen_and_tick_data <- read_csv(here("data","processed","pathogen_vs_temp_data.csv"))
 
+pathogen_and_tick_data <- pathogen_and_tick_data |> 
+  filter(siteID %in% c("HARV", "SCBI", "SERC", "TREE", "UKFS", "BLAN"))
+
 # Table with the total number of pathogens recorded each day
 
 daily_pathogen_count <- read_csv(here("data", "processed", "daily_pathogen_count.csv"))
+
+daily_pathogen_count <- daily_pathogen_count |>
+  filter(siteID %in% c("HARV", "SCBI", "SERC", "TREE", "UKFS", "BLAN"))
 
 ```
 
@@ -104,12 +110,12 @@ Next, we will make a scatterplot showing the distribution pathogen counts across
 
 lm_plot <- ggplot(pathogen_and_tick_data,
                   aes(x = mean_temp,
-                      y = pathogenCount)) +
+                      y = positiveProportion)) +
   geom_point(alpha = 0.6) + 
   theme_classic() +
   labs(
     x = "Mean Daily Temperature (ºC)",
-    y = "Total Number of Pathogens"
+    y = "Proportion of Positive Pathogens"
   )
 
 # Show plot
@@ -131,7 +137,7 @@ monthly_pathogen_count <- daily_pathogen_count |>
   ) |>
   group_by(month) |>
   summarise(
-    pathogenCount = sum(pathogenCount)
+    positiveProportion = sum(positiveProportion)
   )
 
 # Create graph showing distribution of pathogen counts over the months
@@ -140,7 +146,7 @@ ggplot(
   data = monthly_pathogen_count,
   aes(
     x = month, 
-    y = pathogenCount
+    y = positiveProportion
     ) 
   ) +
   geom_segment(
@@ -148,7 +154,7 @@ ggplot(
       x = month,
       xend = month,
       y = 0,
-      yend = pathogenCount
+      yend = positiveProportion
     ),
     color = "seagreen"
   ) +
@@ -164,3 +170,43 @@ ggplot(
 
 ```
 **Figure 2:** A graph bar-graph variant that shows a comparison of the number of tick pathogens that were positive each month. The large green dot is the total number of pathogens for a given month. The line under each dot helps compare the dot locations against each other. A vast majority of tick pathogens are found in the summer months of June. July and August also have significant numbers of positive tests. It is possible that including more sites would yield better results in our study as these sites appear to only test in summer months.
+
+***
+
+# Monthly Site Pathogen Proportion 
+
+```{r}
+
+# Decide on sites to use
+
+monthly_proportion_filter <- daily_pathogen_count |>
+  mutate(month = month(collectDate)) |>
+  group_by(siteID, month) |>
+  summarise(positiveProportion = sum(positiveProportion)) |>
+  filter(positiveProportion >= 0.5)
+
+# Visualize site proportions
+
+monthly_pathogen_site <- daily_pathogen_count |>
+  mutate(
+    month = month(collectDate)
+  ) |>
+  group_by(siteID, month) |>
+  filter(siteID %in% c("HARV", "SCBI", "SERC", "TREE", "UKFS", "BLAN")) |>
+  summarise(
+    positiveProportion = sum(positiveProportion)
+  )
+
+# Graph proportion by siteID
+
+ggplot(
+  data = monthly_pathogen_site,
+  aes(
+    x = month, 
+    y = positiveProportion) 
+  ) +
+  geom_point() +
+  facet_wrap(~siteID) +
+theme_bw()
+
+```
