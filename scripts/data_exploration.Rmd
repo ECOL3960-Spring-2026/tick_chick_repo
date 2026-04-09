@@ -162,3 +162,84 @@ ggplot(
 theme_bw()
 
 ```
+
+----------------------------------------------------------
+## Make a Map of NEON Data Sites
+
+```{r, methods figure}
+
+## Load Packages
+#install.packages("maps")
+library(here)
+library(tidyverse)
+library(maps)
+
+## Read in metadata for all NEON sites
+sites_all <- read_csv(here("data", "raw", "NEON_Field_Site_Metadata_20210226_0.csv")) %>%
+  select(domainID:colocated_site, latitude:longitude, state:country)
+
+## Define the list of our project's sites
+mySites <- pathogen_and_tick_data %>%
+  distinct(siteID) %>%
+  pull(siteID)
+  
+## Subset "sites" object for our project's sites
+sites <- sites_all %>%
+  filter(siteID %in% mySites) %>%
+  arrange(siteID)
+
+## List state names of our sites
+myStates <- as.character(sites$state)
+
+## Add pathogen info per site -- note proportion is weighted per site
+site_summary <- pathogen_and_tick_data %>%
+  group_by(siteID) %>%
+  summarise(
+    total_positive = sum(positiveCount, na.rm = TRUE),
+    total_tested = sum(totalCount, na.rm = TRUE),
+    prop_pathogen = ifelse(total_tested > 0,
+                           total_positive / total_tested,
+                           NA)
+  )
+
+## Join summary-site and create categories of prevalence
+sites_plot <- sites %>%
+  left_join(site_summary, by = "siteID")
+
+sites_plot <- sites_plot %>%
+  mutate(category = case_when(
+    prop_pathogen == 0 ~ "No positive ticks",
+    prop_pathogen < 0.05 ~ "<5% pathogen",
+    prop_pathogen >= 0.05 ~ "≥5% pathogen"
+  ))
+
+## get US map with state boundaries
+us_states <- map_data("state")
+
+## Map our sites
+ggplot() +
+  # US state outlines
+  geom_polygon(data = us_states,
+               aes(x = long, y = lat, group = group),
+               fill = NA,
+               color = "black",
+               linewidth = 0.3) +
+  
+  # Site points
+  geom_point(data = sites_plot,
+             aes(x = longitude, y = latitude,
+                 color = category),
+             size = 3) +
+  
+  # Match your whiteboard colors
+  scale_color_manual(values = c(
+    "No positive ticks" = "green",
+    "<5% pathogen" = "pink",
+    "≥5% pathogen" = "darkred"
+  )) +
+  
+  coord_fixed(1.3) +
+  theme_void() +
+  
+  labs(color = "Pathogen Status")
+```
