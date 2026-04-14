@@ -178,8 +178,11 @@ library(maps)
 sites_all <- read_csv(here("data", "raw", "NEON_Field_Site_Metadata_20210226_0.csv")) %>%
   select(domainID:colocated_site, latitude:longitude, state:country)
 
+## Read in pathogen positive proportion data (monthly)
+monthly_pathogens <- read_csv(here("data","processed","monthly_pathogen_count.csv"))
+
 ## Define the list of our project's sites
-mySites <- pathogen_and_tick_data %>%
+mySites <- monthly_pathogens %>%
   distinct(siteID) %>%
   pull(siteID)
   
@@ -191,15 +194,11 @@ sites <- sites_all %>%
 ## List state names of our sites
 myStates <- as.character(sites$state)
 
-## Add pathogen info per site -- note proportion is weighted per site
-site_summary <- pathogen_and_tick_data %>%
+## Add pathogen info per site
+site_summary <- monthly_pathogens %>%
   group_by(siteID) %>%
-  summarise(
-    total_positive = sum(positiveCount, na.rm = TRUE),
-    total_tested = sum(totalCount, na.rm = TRUE),
-    prop_pathogen = ifelse(total_tested > 0,
-                           total_positive / total_tested,
-                           NA)
+  summarize(
+    average = mean(positiveProportion)
   )
 
 ## Join summary-site and create categories of prevalence
@@ -208,13 +207,17 @@ sites_plot <- sites %>%
 
 sites_plot <- sites_plot %>%
   mutate(category = case_when(
-    prop_pathogen == 0 ~ "No positive ticks",
-    prop_pathogen < 0.05 ~ "<5% pathogen",
-    prop_pathogen >= 0.05 ~ "≥5% pathogen"
+    average == 0.00 ~ "0 pathogen",
+    average < 0.05 ~ "<5% pathogen",
+    average >= 0.05 ~ "≥5% pathogen"
   ))
 
 ## get US map with state boundaries
 us_states <- map_data("state")
+
+```
+
+```{r}
 
 ## Map our sites
 ggplot() +
@@ -224,22 +227,16 @@ ggplot() +
                fill = NA,
                color = "black",
                linewidth = 0.3) +
-  
   # Site points
   geom_point(data = sites_plot,
              aes(x = longitude, y = latitude,
                  color = category),
-             size = 3) +
-  
-  # Match your whiteboard colors
-  scale_color_manual(values = c(
-    "No positive ticks" = "green",
-    "<5% pathogen" = "pink",
-    "≥5% pathogen" = "darkred"
-  )) +
-  
+             size = 2.5) +
+  # Assign Colors to Category
+  scale_color_manual(values = c("royalblue","pink","maroon"),
+                     labels = c("0 pathogen","<5% pathogen","≥5% pathogen")) +
   coord_fixed(1.3) +
   theme_void() +
-  
   labs(color = "Pathogen Status")
+
 ```
