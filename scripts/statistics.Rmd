@@ -169,6 +169,22 @@ lm_plot <- ggplot(pathogen_and_tick_data,
 
 lm_plot
 
+# Calculate relevant summary statistics for each graph
+library(dplyr)
+library(broom)
+
+site_slopes <- pathogen_and_tick_data %>%
+  group_by(siteID) %>%
+  do(tidy(glm(
+    positiveProportion ~ mean_temp,
+    family = quasibinomial,
+    data = .,
+    weights = totalCount
+  ))) %>%
+  filter(term == "mean_temp")
+
+site_slopes
+
 ```
 **Figure 1:** Scatter plot showing the total number of pathogens across the average daily temperatures at the sites. The grey dots represent an individual sample at a particular temperature that has a certain number of positive pathogen tests. There is no statistically significant relationship between the two variables and the dots appear almost randomly scattered along the graph.
 
@@ -186,6 +202,8 @@ monthly_pathogen_count <- daily_pathogen_count |>
   summarise(
     positiveProportion = sum(positiveProportion)
   )
+
+View(monthly_pathogen_count)
 
 # Create graph showing distribution of pathogen counts over the months
 
@@ -218,7 +236,6 @@ ggplot(
 ```
 **Figure 2:** A graph bar-graph variant that shows a comparison of the number of tick pathogens that were positive each month. The large green dot is the total number of pathogens for a given month. The line under each dot helps compare the dot locations against each other. A vast majority of tick pathogens are found in the summer months of June. July and August also have significant numbers of positive tests. It is possible that including more sites would yield better results in our study as these sites appear to only test in summer months.
 
-***
 
 # Monthly Site Pathogen Proportion 
 
@@ -243,6 +260,8 @@ monthly_pathogen_site <- daily_pathogen_count |>
   summarise(
     positiveProportion = sum(positiveProportion)
   )
+
+View(monthly_pathogen_site)
 
 # Graph proportion by siteID
 
