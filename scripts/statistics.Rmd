@@ -58,9 +58,23 @@ This model has average temperature as the predictor that may influence the numbe
 
 ```{r, linear regression}
 
-ln_model <- lm(positiveProportion ~ mean_temp, data = pathogen_and_tick_data)
+# Old Model
+# ln_model <- lm(positiveProportion ~ mean_temp, data = pathogen_and_tick_data)
+# Binormal showed too high of variability in deviance test so we switched to quasibinomial
 
-summary(ln_model)
+glm_model <- glm(
+  positiveProportion ~ mean_temp, 
+  weights = totalCount, 
+  data = pathogen_and_tick_data, 
+  family = quasibinomial)
+
+summary(glm_model)
+
+
+# Model is overdispersed, varience is bigger than expected for the assumptions of model
+# This test showed high variance so switched from binomial family to quasibinomial
+
+deviance(glm_model) / df.residual(glm_model)
 
 ```
 
@@ -109,10 +123,43 @@ Next, we will make a scatterplot showing the distribution pathogen counts across
 # Create plot
 
 lm_plot <- ggplot(pathogen_and_tick_data,
-                  aes(x = mean_temp,
-                      y = positiveProportion)) +
+                  aes(
+                    x = mean_temp,
+                    y = positiveProportion)) +
   geom_point(alpha = 0.6) + 
+  geom_smooth(
+    method = "glm",
+    method.args = list(family = quasibinomial),
+    se = TRUE
+  ) +
   theme_classic() +
+  labs(
+    x = "Mean Daily Temperature (ºC)",
+    y = "Proportion of Positive Pathogens"
+  )
+
+# Show plot
+
+lm_plot
+
+```
+
+```{r}
+
+# Create plot
+
+lm_plot <- ggplot(pathogen_and_tick_data,
+                  aes(
+                    x = mean_temp,
+                    y = positiveProportion)) +
+  geom_point(alpha = 0.6) + 
+  geom_smooth(
+    method = "glm",
+    method.args = list(family = quasibinomial),
+    se = TRUE
+  ) +
+  theme_classic() +
+  facet_wrap(~factor(siteID, c("HARV", "SERC", "BLAN", "TREE", "UKFS", "SCBI"))) +
   labs(
     x = "Mean Daily Temperature (ºC)",
     y = "Proportion of Positive Pathogens"
