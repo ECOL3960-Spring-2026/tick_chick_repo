@@ -166,7 +166,7 @@ lm_plot <- ggplot(pathogen_and_tick_data,
     se = TRUE
   ) +
   theme_classic() +
-  facet_wrap(~factor(siteID, c("BLAN", "HARV", "MLBS", "STEI", "TREE", "UKFS"))) +
+  facet_wrap(~factor(siteID, c("TREE", "STEI", "HARV", "MLBS", "UKFS", "BLAN"))) + # first 3 sites are "North" second 3 sites are "South"
   labs(
     x = "Mean Daily Temperature (ºC)",
     y = "Proportion of Positive Pathogens"
