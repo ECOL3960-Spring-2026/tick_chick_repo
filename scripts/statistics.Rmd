@@ -195,7 +195,7 @@ site_slopes
 # Qusi-binomial statistics for sites
 
 glm_model <- glm(
-  positiveProportion ~ mean_temp + siteID, 
+  positiveProportion ~ mean_temp + siteID - 1, 
   weights = totalCount, 
   data = pathogen_and_tick_data, 
   family = quasibinomial)
