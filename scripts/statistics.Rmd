@@ -200,7 +200,7 @@ monthly_pathogen_count <- daily_pathogen_count |>
   ) |>
   group_by(month) |>
   summarise(
-    positiveProportion = sum(positiveProportion)
+    positiveCount = sum(positiveCount)
   )
 
 View(monthly_pathogen_count)
@@ -211,7 +211,7 @@ ggplot(
   data = monthly_pathogen_count,
   aes(
     x = month, 
-    y = positiveProportion
+    y = positiveCount
     ) 
   ) +
   geom_segment(
@@ -219,7 +219,7 @@ ggplot(
       x = month,
       xend = month,
       y = 0,
-      yend = positiveProportion
+      yend = positiveCount
     ),
     color = "seagreen"
   ) +
