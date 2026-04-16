@@ -24,7 +24,7 @@ library(neonUtilities)
 
 # Define Data Products, Sites, and Dates
 
-Define the NEON data sets we are using, the relevant sites (HARV and DELA), and the date range that all data sets cover for both sites.
+Define the NEON data sets we are using, the relevant sites, and the date range that all data sets cover for both sites.
 
 ```{r set NEON conditions}
 
@@ -38,7 +38,7 @@ relative_humidity <- "DP1.00098.001"
 tick_abundance <- "DP1.10093.001"
 
 # Assigning two sites
-my_sites <- c("HARV","DELA")
+my_sites <- c("BLAN", "CLBJ", "HARV", "MLBS", "STEI", "TREE", "UKFS")
 
 # Start date (as YYYY-MM)
 start_date <- "2016-01"

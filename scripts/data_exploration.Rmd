@@ -196,21 +196,22 @@ myStates <- as.character(sites$state)
 
 ## Add pathogen info per site
 site_summary <- monthly_pathogens %>%
-  group_by(siteID) %>%
+  group_by(siteID, month) %>%
   summarize(
-    average = mean(positiveProportion)
-  )
+    average = mean(positiveProportion))
+
+site_summary <- site_summary %>% 
+  group_by(siteID) %>% 
+  summarise(
+    max = max(average)
+  ) %>% 
+  mutate(category = ifelse(max >= 0.05, "≥5% pathogen",
+                           ifelse(max > 0, "<5% pathogen",
+                                  "0 pathogen")))
 
 ## Join summary-site and create categories of prevalence
 sites_plot <- sites %>%
   left_join(site_summary, by = "siteID")
-
-sites_plot <- sites_plot %>%
-  mutate(category = case_when(
-    average == 0.00 ~ "0 pathogen",
-    average < 0.05 ~ "<5% pathogen",
-    average >= 0.05 ~ "≥5% pathogen"
-  ))
 
 ## get US map with state boundaries
 us_states <- map_data("state")
@@ -227,16 +228,28 @@ ggplot() +
                fill = NA,
                color = "black",
                linewidth = 0.3) +
-  # Site points
-  geom_point(data = sites_plot,
+  
+  # 1) Draw ALL non-maroon points first
+  geom_point(data = subset(sites_plot, category != "≥5% pathogen"),
              aes(x = longitude, y = latitude,
-                 color = category),
-             size = 2.5) +
-  # Assign Colors to Category
-  scale_color_manual(values = c("royalblue","pink","maroon"),
-                     labels = c("0 pathogen","<5% pathogen","≥5% pathogen")) +
+                 fill = category),
+             size = 2.5, pch = 21, color = "black") +
+  
+  # 2) Draw maroon points LAST (on top)
+  geom_point(data = subset(sites_plot, category == "≥5% pathogen"),
+             aes(x = longitude, y = latitude,
+                 fill = category),
+             size = 2.5, pch = 21, color = "black") +
+  
+  scale_fill_manual(
+    values = c(
+      "≥5% pathogen" = "maroon",
+      "<5% pathogen" = "pink",
+      "0 pathogen" = "royalblue"
+    )
+  ) +
   coord_fixed(1.3) +
   theme_void() +
-  labs(color = "Pathogen Status")
+  labs(fill = "Pathogen Status")
 
 ```

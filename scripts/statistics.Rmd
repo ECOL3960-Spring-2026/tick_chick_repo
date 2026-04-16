@@ -37,14 +37,14 @@ Load the pre-wrangled data from an existing csv file. All data manipulation can 
 pathogen_and_tick_data <- read_csv(here("data","processed","pathogen_vs_temp_data.csv"))
 
 pathogen_and_tick_data <- pathogen_and_tick_data |> 
-  filter(siteID %in% c("HARV", "SCBI", "SERC", "TREE", "UKFS", "BLAN"))
+  filter(siteID %in% c("BLAN", "CLBJ", "HARV", "MLBS", "STEI", "TREE", "UKFS"))
 
 # Table with the total number of pathogens recorded each day
 
 daily_pathogen_count <- read_csv(here("data", "processed", "daily_pathogen_count.csv"))
 
 daily_pathogen_count <- daily_pathogen_count |>
-  filter(siteID %in% c("HARV", "SCBI", "SERC", "TREE", "UKFS", "BLAN"))
+  filter(siteID %in% c("BLAN", "CLBJ", "HARV", "MLBS", "STEI", "TREE", "UKFS"))
 
 ```
 
@@ -159,7 +159,7 @@ lm_plot <- ggplot(pathogen_and_tick_data,
     se = TRUE
   ) +
   theme_classic() +
-  facet_wrap(~factor(siteID, c("HARV", "SERC", "BLAN", "TREE", "UKFS", "SCBI"))) +
+  facet_wrap(~factor(siteID, c("BLAN", "CLBJ", "HARV", "MLBS", "STEI", "TREE", "UKFS"))) +
   labs(
     x = "Mean Daily Temperature (ºC)",
     y = "Proportion of Positive Pathogens"
@@ -246,8 +246,8 @@ ggplot(
 monthly_proportion_filter <- daily_pathogen_count |>
   mutate(month = month(collectDate)) |>
   group_by(siteID, month) |>
-  summarise(positiveProportion = sum(positiveProportion)) |>
-  filter(positiveProportion >= 0.5)
+  summarise(positiveProportion = mean(positiveProportion)) |>
+  filter(positiveProportion >= 0.05)
 
 # Visualize site proportions
 
@@ -256,9 +256,9 @@ monthly_pathogen_site <- daily_pathogen_count |>
     month = month(collectDate)
   ) |>
   group_by(siteID, month) |>
-  filter(siteID %in% c("HARV", "SCBI", "SERC", "TREE", "UKFS", "BLAN")) |>
+  filter(siteID %in% c("BLAN", "CLBJ", "HARV", "MLBS", "STEI", "TREE", "UKFS")) |>
   summarise(
-    positiveProportion = sum(positiveProportion)
+    positiveProportion = mean(positiveProportion)
   )
 
 View(monthly_pathogen_site)
