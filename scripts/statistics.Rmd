@@ -36,15 +36,22 @@ Load the pre-wrangled data from an existing csv file. All data manipulation can 
 
 pathogen_and_tick_data <- read_csv(here("data","processed","pathogen_vs_temp_data.csv"))
 
-pathogen_and_tick_data <- pathogen_and_tick_data |> 
-  filter(siteID %in% c("BLAN", "CLBJ", "HARV", "MLBS", "STEI", "TREE", "UKFS"))
-
 # Table with the total number of pathogens recorded each day
 
 daily_pathogen_count <- read_csv(here("data", "processed", "daily_pathogen_count.csv"))
 
+```
+
+```{r}
+
+# Filter data to include only sites that have >= 5% positive tests at a given point
+
+pathogen_and_tick_data <- pathogen_and_tick_data |> 
+  filter(siteID %in% c("BLAN", "HARV", "MLBS", "STEI", "TREE", "UKFS"),
+         mean_temp > 1)
+
 daily_pathogen_count <- daily_pathogen_count |>
-  filter(siteID %in% c("BLAN", "CLBJ", "HARV", "MLBS", "STEI", "TREE", "UKFS"))
+  filter(siteID %in% c("BLAN", "HARV", "MLBS", "STEI", "TREE", "UKFS"))
 
 ```
 
@@ -159,7 +166,7 @@ lm_plot <- ggplot(pathogen_and_tick_data,
     se = TRUE
   ) +
   theme_classic() +
-  facet_wrap(~factor(siteID, c("BLAN", "CLBJ", "HARV", "MLBS", "STEI", "TREE", "UKFS"))) +
+  facet_wrap(~factor(siteID, c("BLAN", "HARV", "MLBS", "STEI", "TREE", "UKFS"))) +
   labs(
     x = "Mean Daily Temperature (ºC)",
     y = "Proportion of Positive Pathogens"
@@ -185,6 +192,16 @@ site_slopes <- pathogen_and_tick_data %>%
 
 site_slopes
 
+# Qusi-binomial statistics for sites
+
+glm_model <- glm(
+  positiveProportion ~ mean_temp + siteID, 
+  weights = totalCount, 
+  data = pathogen_and_tick_data, 
+  family = quasibinomial)
+
+summary(glm_model)
+
 ```
 **Figure 1:** Scatter plot showing the total number of pathogens across the average daily temperatures at the sites. The grey dots represent an individual sample at a particular temperature that has a certain number of positive pathogen tests. There is no statistically significant relationship between the two variables and the dots appear almost randomly scattered along the graph.
 
@@ -202,8 +219,6 @@ monthly_pathogen_count <- daily_pathogen_count |>
   summarise(
     positiveCount = sum(positiveCount)
   )
-
-View(monthly_pathogen_count)
 
 # Create graph showing distribution of pathogen counts over the months
 
@@ -231,6 +246,7 @@ ggplot(
     x = "Months",
     y = "Number of Pathogens"
   ) +
+  scale_x_continuous(breaks = 1:12, labels = month.abb) +
   theme_bw()
 
 ```
@@ -256,12 +272,10 @@ monthly_pathogen_site <- daily_pathogen_count |>
     month = month(collectDate)
   ) |>
   group_by(siteID, month) |>
-  filter(siteID %in% c("BLAN", "CLBJ", "HARV", "MLBS", "STEI", "TREE", "UKFS")) |>
+  filter(siteID %in% c("BLAN", "HARV", "MLBS", "STEI", "TREE", "UKFS")) |>
   summarise(
     positiveProportion = mean(positiveProportion)
   )
-
-View(monthly_pathogen_site)
 
 # Graph proportion by siteID
 
