@@ -244,7 +244,7 @@ ggplot(
   ) +
   labs(
     x = "Months",
-    y = "Number of Pathogens"
+    y = "Number of Pathogenic Ticks"
   ) +
   scale_x_continuous(breaks = 1:12, labels = month.abb) +
   theme_bw()
